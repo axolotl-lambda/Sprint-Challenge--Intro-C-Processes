@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <dirent.h>
+#include <sys/stat.h>
 
 /**
  * Main
@@ -23,7 +24,7 @@ int main(int argc, char **argv)
   // if more then 2 args, error out
   else
   {
-    perror("too many arguments");
+    printf("Error: too many arguments\n");
     return 1;
   }
 
@@ -31,6 +32,7 @@ int main(int argc, char **argv)
   printf("Attempting to open %s\n", dir_to_open);
   DIR *dir;
   struct dirent *entry;
+  struct stat buf;
 
   dir = opendir(dir_to_open);
 
@@ -39,13 +41,18 @@ int main(int argc, char **argv)
     perror("opendir() error");
   }
   // Repeatly read and print entries
-
   else
   {
     puts("contents of directory:");
     while ((entry = readdir(dir)) != NULL)
-      printf("  %s\n", entry->d_name);
+    {
+      stat((entry->d_name), &buf);
+      // printf("file size is %lld\n", buf.st_size);
+      // printf("  %s\n", entry->d_name);
+      printf("%lld %s\n", buf.st_size, entry->d_name);
+    }
   }
+
   // Close directory
   closedir(dir);
 
