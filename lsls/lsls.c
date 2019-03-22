@@ -45,10 +45,8 @@ int main(int argc, char **argv)
   {
     printf("Contents of %s:\n", dir_to_open);
     // print out `.` and `..` first
-    stat(".", &buf);
-    printf("%10lld %s\n", buf.st_size, ".");
-    stat("..", &buf);
-    printf("%10lld %s\n", buf.st_size, "..");
+    printf("     <DIR> %s\n", ".");
+    printf("     <DIR> %s\n", "..");
 
     // print out rest of entries
     while ((entry = readdir(dir)) != NULL)
@@ -57,7 +55,15 @@ int main(int argc, char **argv)
       if (strcmp(entry->d_name, ".") && strcmp(entry->d_name, ".."))
       {
         stat((entry->d_name), &buf);
-        printf("%10lld %s\n", buf.st_size, entry->d_name);
+        int is_dir = (buf.st_mode & S_IFDIR) > 0;
+        if (is_dir)
+        {
+          printf("     <DIR> %s\n", entry->d_name);
+        }
+        else
+        {
+          printf("%10lld %s\n", buf.st_size, entry->d_name);
+        }
       }
     }
   }
