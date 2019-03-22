@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <string.h>
 
 /**
  * Main
@@ -29,7 +30,6 @@ int main(int argc, char **argv)
   }
 
   // Open directory
-  printf("Attempting to open %s\n", dir_to_open);
   DIR *dir;
   struct dirent *entry;
   struct stat buf;
@@ -43,11 +43,22 @@ int main(int argc, char **argv)
   // Repeatly read and print entries
   else
   {
-    puts("contents of directory:");
+    printf("Contents of %s:\n", dir_to_open);
+    // print out `.` and `..` first
+    stat(".", &buf);
+    printf("%10lld %s\n", buf.st_size, ".");
+    stat("..", &buf);
+    printf("%10lld %s\n", buf.st_size, "..");
+
+    // print out rest of entries
     while ((entry = readdir(dir)) != NULL)
     {
-      stat((entry->d_name), &buf);
-      printf("%lld %s\n", buf.st_size, entry->d_name);
+      // for each one, make sure it's not `.` or `..`
+      if (strcmp(entry->d_name, ".") && strcmp(entry->d_name, ".."))
+      {
+        stat((entry->d_name), &buf);
+        printf("%10lld %s\n", buf.st_size, entry->d_name);
+      }
     }
   }
 
