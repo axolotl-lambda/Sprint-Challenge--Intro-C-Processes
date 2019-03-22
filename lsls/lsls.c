@@ -55,7 +55,8 @@ int main(int argc, char **argv)
       if (strcmp(entry->d_name, ".") && strcmp(entry->d_name, ".."))
       {
         stat((entry->d_name), &buf);
-        int is_dir = (buf.st_mode & S_IFDIR) > 0;
+        int is_dir = S_ISDIR(buf.st_mode);
+
         if (is_dir)
         {
           printf("%10s %s\n", "<DIR>", entry->d_name);
