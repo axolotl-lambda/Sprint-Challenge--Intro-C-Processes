@@ -45,8 +45,8 @@ int main(int argc, char **argv)
   {
     printf("Contents of %s:\n", dir_to_open);
     // print out `.` and `..` first
-    printf("     <DIR> %s\n", ".");
-    printf("     <DIR> %s\n", "..");
+    printf("%10s %s\n", "<DIR>", ".");
+    printf("%10s %s\n", "<DIR>", "..");
 
     // print out rest of entries
     while ((entry = readdir(dir)) != NULL)
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
         int is_dir = (buf.st_mode & S_IFDIR) > 0;
         if (is_dir)
         {
-          printf("     <DIR> %s\n", entry->d_name);
+          printf("%10s %s\n", "<DIR>", entry->d_name);
         }
         else
         {
